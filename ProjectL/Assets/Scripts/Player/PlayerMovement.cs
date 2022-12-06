@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Vector2 FaceDirection { get => m_faceDirection; set => m_faceDirection = value; }
+    public static PlayerMovement Instance { get => m_instance; set => m_instance = value; }
+
     [SerializeField]
     private float m_movementSpeed;
 
@@ -13,7 +15,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Vector2 m_faceDirection;
 
+    private static PlayerMovement m_instance;
 
+    private void Awake()
+    {
+        if (m_instance != null && m_instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            m_instance = this;
+        }
+    }
     private void Update()
     {
         Movement();
