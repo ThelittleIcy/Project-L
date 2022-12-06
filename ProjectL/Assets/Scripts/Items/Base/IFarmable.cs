@@ -12,5 +12,5 @@ public enum Tools
     NONE,
     AXE,
     PICKAXE,
-    SHOVEL
+    WEAPON
 }

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
 public abstract class AItem : MonoBehaviour, IPickable, IDropable
 {
     [SerializeField]
@@ -14,34 +13,27 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
 
     private Coroutine m_pickUpCoroutine = null;
     private Coroutine m_dropCoroutine = null;
-    public void PickUp()
+
+    public Coroutine PickUpCoroutine { get => m_pickUpCoroutine; set => m_pickUpCoroutine = value; }
+    public Coroutine DropCoroutine { get => m_dropCoroutine; set => m_dropCoroutine = value; }
+
+    public virtual void PickUp()
     {
-        Debug.Log("Picked Up Item " + name);
+        PopUpManager.Instance.GeneratePopUp("Picked up " + name);
         m_pickedUp = true;
         // Add To Inventory
         AddToInventory();
-        this.transform.parent = PlayerTools.Instance.transform;
-        this.transform.position = PlayerTools.Instance.transform.position;
-        gameObject.GetComponentInChildren<SpriteRenderer>().enabled = false;
-        gameObject.GetComponent<CircleCollider2D>().enabled = false;
     }
-    public void Drop()
+    public virtual void Drop()
     {
-        Debug.Log("Droped Item " + name);
+        PopUpManager.Instance.GeneratePopUp("Dropped " + name);
         m_pickedUp = false;
         // Remove From Inventory
         RemoveFromInventory();
-        this.transform.parent = null;
-        gameObject.GetComponentInChildren<SpriteRenderer>().enabled = true;
-        gameObject.GetComponent<CircleCollider2D>().enabled = true;
     }
     public virtual void Use()
     {
 
-    }
-    public virtual void Select()
-    {
-        m_dropCoroutine = StartCoroutine(CanDrop());
     }
     public virtual void AddToInventory()
     {
@@ -55,14 +47,14 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_pickUpCoroutine = StartCoroutine(CanPickUp());
+        PickUpCoroutine = StartCoroutine(CanPickUp());
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        StopCoroutine(m_pickUpCoroutine);
+        StopCoroutine(PickUpCoroutine);
     }
 
-    private IEnumerator CanPickUp()
+    public IEnumerator CanPickUp()
     {
         while (!m_pickedUp)
         {
@@ -74,7 +66,7 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
         }
     }
 
-    private IEnumerator CanDrop()
+    public IEnumerator CanDrop()
     {
         while (m_pickedUp)
         {
