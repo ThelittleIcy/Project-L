@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class BlackScreenManager : MonoBehaviour
 {
     public static BlackScreenManager Instance { get => m_instance; set => m_instance = value; }
     private static BlackScreenManager m_instance;
+
+    public UnityEvent OnBlackScreenFinished;
 
     private Coroutine m_fadeToBlackCoroutine;
     private Coroutine m_fadeAwayCoroutine;
@@ -29,9 +32,9 @@ public class BlackScreenManager : MonoBehaviour
         }
     }
     [ContextMenu("Start")]
-    private void Test()
+    public void StartFadeToBlack()
     {
-        StartCoroutine(ToBlack());
+        m_fadeToBlackCoroutine= StartCoroutine(ToBlack());
     }
     public IEnumerator ToBlack()
     {
@@ -40,7 +43,6 @@ public class BlackScreenManager : MonoBehaviour
             Color tmp = m_image.color;
             tmp.a += 0.01f;
             m_image.color = tmp;
-            Debug.Log(m_image.color.a);
             yield return new WaitForFixedUpdate();
         }
         m_waitCoroutine = StartCoroutine(Wait(m_waitSeconds));
@@ -66,5 +68,6 @@ public class BlackScreenManager : MonoBehaviour
             m_image.color = tmp;
             yield return new WaitForFixedUpdate();
         }
+        OnBlackScreenFinished?.Invoke();
     }
 }

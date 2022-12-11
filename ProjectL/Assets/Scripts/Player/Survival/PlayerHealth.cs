@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
 {
     public UnityEvent OnPlayerDied;
     public UnityEvent OnPlayerSleep;
+    public UnityEvent OnPlayerAwake;
 
     [SerializeField]
     private int m_maxHealth;
@@ -320,6 +321,12 @@ public class PlayerHealth : MonoBehaviour
     }
     private void Sleep()
     {
-        Debug.Log("Sleeeeeeeeeeep");
+        BlackScreenManager.Instance.StartFadeToBlack();
+        BlackScreenManager.Instance.OnBlackScreenFinished.AddListener(WakeUp);
+    }
+    private void WakeUp()
+    {
+        OnPlayerAwake?.Invoke();
+        BlackScreenManager.Instance.OnBlackScreenFinished.RemoveListener(WakeUp);
     }
 }
