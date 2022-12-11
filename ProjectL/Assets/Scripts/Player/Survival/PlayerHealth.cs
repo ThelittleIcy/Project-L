@@ -322,11 +322,11 @@ public class PlayerHealth : MonoBehaviour
     private void Sleep()
     {
         BlackScreenManager.Instance.StartFadeToBlack();
-        BlackScreenManager.Instance.OnBlackScreenFinished.AddListener(WakeUp);
+        BlackScreenManager.Instance.OnBlackScreenFinishedEvent.AddListener(WakeUp);
     }
     private void WakeUp()
     {
         OnPlayerAwake?.Invoke();
-        BlackScreenManager.Instance.OnBlackScreenFinished.RemoveListener(WakeUp);
+        BlackScreenManager.Instance.OnBlackScreenFinishedEvent.RemoveListener(WakeUp);
     }
 }

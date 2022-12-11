@@ -9,7 +9,8 @@ public class BlackScreenManager : MonoBehaviour
     public static BlackScreenManager Instance { get => m_instance; set => m_instance = value; }
     private static BlackScreenManager m_instance;
 
-    public UnityEvent OnBlackScreenFinished;
+    public UnityEvent OnBlackScreenFinishedEvent;
+    public UnityEvent OnBlackScreenStartedEvent;
 
     private Coroutine m_fadeToBlackCoroutine;
     private Coroutine m_fadeAwayCoroutine;
@@ -38,6 +39,7 @@ public class BlackScreenManager : MonoBehaviour
     }
     public IEnumerator ToBlack()
     {
+        OnBlackScreenStartedEvent?.Invoke();
         while(m_image.color.a <= 1)
         {
             Color tmp = m_image.color;
@@ -68,6 +70,6 @@ public class BlackScreenManager : MonoBehaviour
             m_image.color = tmp;
             yield return new WaitForFixedUpdate();
         }
-        OnBlackScreenFinished?.Invoke();
+        OnBlackScreenFinishedEvent?.Invoke();
     }
 }
