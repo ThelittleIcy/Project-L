@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AItem : MonoBehaviour, IPickable, IDropable
+public abstract class AItem : AInteractable, IPickable, IDropable
 {
-    [SerializeField]
-    private KeyCode m_pickUpKey = KeyCode.F;
     [SerializeField]
     private KeyCode m_dropKey = KeyCode.F;
     [SerializeField]
     private bool m_pickedUp = false;
+
+    public KeyCode DropKey { get => m_dropKey; set => m_dropKey = value; }
 
     private Coroutine m_pickUpCoroutine = null;
     private Coroutine m_dropCoroutine = null;
@@ -17,7 +17,7 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
     public Coroutine PickUpCoroutine { get => m_pickUpCoroutine; set => m_pickUpCoroutine = value; }
     public Coroutine DropCoroutine { get => m_dropCoroutine; set => m_dropCoroutine = value; }
 
-    public virtual void PickUp()
+    public override void Interact()
     {
         PopUpManager.Instance.GeneratePopUp("Picked up " + name);
         m_pickedUp = true;
@@ -45,22 +45,13 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        PickUpCoroutine = StartCoroutine(CanPickUp());
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        StopCoroutine(PickUpCoroutine);
-    }
-
-    public IEnumerator CanPickUp()
+    public override IEnumerator CanInteract()
     {
         while (!m_pickedUp)
         {
-            if (Input.GetKeyDown(m_pickUpKey))
+            if (Input.GetKeyDown(InteractKey))
             {
-                PickUp();
+                Interact();
             }
             yield return null;
         }
@@ -70,7 +61,7 @@ public abstract class AItem : MonoBehaviour, IPickable, IDropable
     {
         while (m_pickedUp)
         {
-            if (Input.GetKeyDown(m_dropKey))
+            if (Input.GetKeyDown(DropKey))
             {
                 Drop();
             }

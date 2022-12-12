@@ -21,9 +21,9 @@ public class Tool : AItem
     [SerializeField]
     private ScriptableTool m_data;
 
-    public override void PickUp()
+    public override void Interact()
     {
-        base.PickUp();
+        base.Interact();
 
         this.transform.parent = PlayerTools.Instance.transform;
         this.transform.position = PlayerTools.Instance.transform.position;

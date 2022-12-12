@@ -93,6 +93,10 @@ public class PlayerHealth : MonoBehaviour
     }
 
     public static PlayerHealth Instance { get => m_instance; set => m_instance = value; }
+    public int MaxEnergy { get => m_maxEnergy; set => m_maxEnergy = value; }
+    public int MaxThirst { get => m_maxThirst; set => m_maxThirst = value; }
+    public int MaxHunger { get => m_maxHunger; set => m_maxHunger = value; }
+    public int MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
     private void Awake()
     {
@@ -110,10 +114,10 @@ public class PlayerHealth : MonoBehaviour
     {
         OnPlayerDied.AddListener(Die);
         OnPlayerSleep.AddListener(Sleep);
-        CurrentHealth = m_maxHealth;
-        CurrentHunger = m_maxHunger;
-        CurrentThirst = m_maxThirst;
-        CurrentEnergy = m_maxEnergy;
+        CurrentHealth = MaxHealth;
+        CurrentHunger = MaxHunger;
+        CurrentThirst = MaxThirst;
+        CurrentEnergy = MaxEnergy;
 
         m_healthUI.SetValue(CurrentHealth);
         m_hungerUI.SetValue(CurrentHunger);
@@ -131,9 +135,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseHunger(int _amount)
     {
         CurrentHunger += _amount;
-        if (CurrentHunger >= m_maxHunger)
+        if (CurrentHunger >= MaxHunger)
         {
-            CurrentHunger = m_maxHunger;
+            CurrentHunger = MaxHunger;
         }
     }
     /// <summary>
@@ -143,9 +147,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseThirst(int _amount)
     {
         CurrentThirst += _amount;
-        if (CurrentThirst >= m_maxThirst)
+        if (CurrentThirst >= MaxThirst)
         {
-            CurrentThirst = m_maxThirst;
+            CurrentThirst = MaxThirst;
         }
     }
     /// <summary>
@@ -155,9 +159,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseHealth(int _amount)
     {
         CurrentHealth += _amount;
-        if (CurrentHealth >= m_maxHealth)
+        if (CurrentHealth >= MaxHealth)
         {
-            CurrentHealth = m_maxHealth;
+            CurrentHealth = MaxHealth;
         }
     }
     /// <summary>
@@ -167,9 +171,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseEnergy(int _amount)
     {
         CurrentEnergy += _amount;
-        if (CurrentEnergy >= m_maxEnergy)
+        if (CurrentEnergy >= MaxEnergy)
         {
-            CurrentEnergy = m_maxEnergy;
+            CurrentEnergy = MaxEnergy;
         }
     }
     /// <summary>
@@ -181,7 +185,7 @@ public class PlayerHealth : MonoBehaviour
     {
         while (CurrentHealth <= CurrentHealth + _amountToIncrease)
         {
-            if (CurrentHealth >= m_maxHealth)
+            if (CurrentHealth >= MaxHealth)
             {
                 yield break;
             }

@@ -6,9 +6,9 @@ public class Item : AItem
 {
     [SerializeField]
     private ScriptableRessource m_data;
-    public override void PickUp()
+    public override void Interact()
     {
-        base.PickUp();
+        base.Interact();
         Destroy(this.gameObject);
     }
     public override void AddToInventory()
