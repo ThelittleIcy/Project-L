@@ -10,6 +10,7 @@ public class BlackScreenManager : MonoBehaviour
     private static BlackScreenManager m_instance;
 
     public UnityEvent OnBlackScreenFinishedEvent;
+    public UnityEvent OnBlackEvent;
     public UnityEvent OnBlackScreenStartedEvent;
 
     private Coroutine m_fadeToBlackCoroutine;
@@ -19,7 +20,7 @@ public class BlackScreenManager : MonoBehaviour
     [SerializeField]
     private Image m_image;
     [SerializeField]
-    private float m_waitSeconds = 5;
+    private float m_waitSeconds = 2;
 
     private void Awake()
     {
@@ -53,6 +54,7 @@ public class BlackScreenManager : MonoBehaviour
     public IEnumerator Wait(float _secondsToWait)
     {
         float seconds = _secondsToWait;
+        OnBlackEvent?.Invoke();
         while(seconds > 0)
         {
             seconds -= 1f;

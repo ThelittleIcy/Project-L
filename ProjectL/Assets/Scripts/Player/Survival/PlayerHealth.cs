@@ -6,7 +6,8 @@ using UnityEngine.Events;
 public class PlayerHealth : MonoBehaviour
 {
     public UnityEvent OnPlayerDied;
-    public UnityEvent OnPlayerSleep;
+    public UnityEvent OnPlayerStartSleep;
+    public UnityEvent OnPlayerAsleep;
     public UnityEvent OnPlayerAwake;
 
     [SerializeField]
@@ -50,6 +51,8 @@ public class PlayerHealth : MonoBehaviour
     private float m_energyWaitForSecondsForReducing = 5f;
     [SerializeField]
     private SurvivalUI m_energyUI;
+    [SerializeField]
+    private KeyCode m_sleepKey = KeyCode.C;
 
     private Coroutine m_looseHealthCoroutine;
     private Coroutine m_looseHungerCoroutine;
@@ -113,7 +116,7 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         OnPlayerDied.AddListener(Die);
-        OnPlayerSleep.AddListener(Sleep);
+        OnPlayerStartSleep.AddListener(Sleep);
         CurrentHealth = MaxHealth;
         CurrentHunger = MaxHunger;
         CurrentThirst = MaxThirst;
@@ -127,6 +130,14 @@ public class PlayerHealth : MonoBehaviour
         m_looseHungerCoroutine = StartCoroutine(ReduceHungerOverTime());
         m_looseThirstCoroutine = StartCoroutine(ReduceThirstOverTime());
         m_looseEnergyCoroutine = StartCoroutine(ReduceEnergyOverTime());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(m_sleepKey))
+        {
+            OnPlayerStartSleep?.Invoke();
+        }
     }
     /// <summary>
     /// Increases the Hunger value.
@@ -253,7 +264,7 @@ public class PlayerHealth : MonoBehaviour
         if (CurrentEnergy <= 0)
         {
             CurrentEnergy = 0;
-            OnPlayerSleep?.Invoke();
+            OnPlayerStartSleep?.Invoke();
             return true;
         }
         return false;
@@ -325,12 +336,18 @@ public class PlayerHealth : MonoBehaviour
     }
     private void Sleep()
     {
-        BlackScreenManager.Instance.StartFadeToBlack();
         BlackScreenManager.Instance.OnBlackScreenFinishedEvent.AddListener(WakeUp);
+        BlackScreenManager.Instance.OnBlackEvent.AddListener(Asleep);
+        BlackScreenManager.Instance.StartFadeToBlack();
     }
     private void WakeUp()
     {
         OnPlayerAwake?.Invoke();
         BlackScreenManager.Instance.OnBlackScreenFinishedEvent.RemoveListener(WakeUp);
+    }
+    private void Asleep()
+    {
+        OnPlayerAsleep?.Invoke();
+        BlackScreenManager.Instance.OnBlackEvent.RemoveListener(Asleep);
     }
 }

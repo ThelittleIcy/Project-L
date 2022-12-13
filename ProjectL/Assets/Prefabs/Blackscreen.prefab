@@ -120,4 +120,4 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_image: {fileID: 399492622213000513}
-  m_waitSeconds: 5
+  m_waitSeconds: 2
