@@ -62,6 +62,10 @@ public class Tool : AItem
             {
                 hit.collider.gameObject.GetComponent<FarmObject>().Farm();
             }
+            //if (hit.collider.gameObject.GetComponent<Enemy>())
+            //{
+
+            //}
         }
         Debug.Log("Used the Tool");
     }
