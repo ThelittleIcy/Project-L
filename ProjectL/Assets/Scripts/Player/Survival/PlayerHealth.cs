@@ -6,6 +6,9 @@ using UnityEngine.Events;
 public class PlayerHealth : MonoBehaviour
 {
     public UnityEvent OnPlayerDied;
+    public UnityEvent OnPlayerStartSleep;
+    public UnityEvent OnPlayerAsleep;
+    public UnityEvent OnPlayerAwake;
 
     [SerializeField]
     private int m_maxHealth;
@@ -38,9 +41,23 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     private SurvivalUI m_thirstUI;
 
+    [SerializeField]
+    private int m_maxEnergy;
+    [SerializeField]
+    private int m_currentEnergy;
+    [SerializeField]
+    private int m_reduceEnergyValue = 1;
+    [SerializeField]
+    private float m_energyWaitForSecondsForReducing = 5f;
+    [SerializeField]
+    private SurvivalUI m_energyUI;
+    [SerializeField]
+    private KeyCode m_sleepKey = KeyCode.C;
+
     private Coroutine m_looseHealthCoroutine;
     private Coroutine m_looseHungerCoroutine;
     private Coroutine m_looseThirstCoroutine;
+    private Coroutine m_looseEnergyCoroutine;
 
     private static PlayerHealth m_instance;
 
@@ -68,8 +85,21 @@ public class PlayerHealth : MonoBehaviour
             m_thirstUI.SetValue(m_currentThirst);
         }
     }
+    public int CurrentEnergy
+    {
+        get => m_currentEnergy;
+        set
+        {
+            m_currentEnergy = value;
+            m_energyUI.SetValue(m_currentEnergy);
+        }
+    }
 
     public static PlayerHealth Instance { get => m_instance; set => m_instance = value; }
+    public int MaxEnergy { get => m_maxEnergy; set => m_maxEnergy = value; }
+    public int MaxThirst { get => m_maxThirst; set => m_maxThirst = value; }
+    public int MaxHunger { get => m_maxHunger; set => m_maxHunger = value; }
+    public int MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
     private void Awake()
     {
@@ -86,16 +116,28 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         OnPlayerDied.AddListener(Die);
-        CurrentHealth = m_maxHealth;
-        CurrentHunger = m_maxHunger;
-        CurrentThirst = m_maxThirst;
+        OnPlayerStartSleep.AddListener(Sleep);
+        CurrentHealth = MaxHealth;
+        CurrentHunger = MaxHunger;
+        CurrentThirst = MaxThirst;
+        CurrentEnergy = MaxEnergy;
 
         m_healthUI.SetValue(CurrentHealth);
         m_hungerUI.SetValue(CurrentHunger);
         m_thirstUI.SetValue(CurrentThirst);
+        m_energyUI.SetValue(CurrentEnergy);
 
         m_looseHungerCoroutine = StartCoroutine(ReduceHungerOverTime());
         m_looseThirstCoroutine = StartCoroutine(ReduceThirstOverTime());
+        m_looseEnergyCoroutine = StartCoroutine(ReduceEnergyOverTime());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(m_sleepKey))
+        {
+            OnPlayerStartSleep?.Invoke();
+        }
     }
     /// <summary>
     /// Increases the Hunger value.
@@ -104,9 +146,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseHunger(int _amount)
     {
         CurrentHunger += _amount;
-        if (CurrentHunger >= m_maxHunger)
+        if (CurrentHunger >= MaxHunger)
         {
-            CurrentHunger = m_maxHunger;
+            CurrentHunger = MaxHunger;
         }
     }
     /// <summary>
@@ -116,9 +158,9 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseThirst(int _amount)
     {
         CurrentThirst += _amount;
-        if (CurrentThirst >= m_maxThirst)
+        if (CurrentThirst >= MaxThirst)
         {
-            CurrentThirst = m_maxThirst;
+            CurrentThirst = MaxThirst;
         }
     }
     /// <summary>
@@ -128,9 +170,21 @@ public class PlayerHealth : MonoBehaviour
     public void IncreaseHealth(int _amount)
     {
         CurrentHealth += _amount;
-        if (CurrentHealth >= m_maxHealth)
+        if (CurrentHealth >= MaxHealth)
         {
-            CurrentHealth = m_maxHealth;
+            CurrentHealth = MaxHealth;
+        }
+    }
+    /// <summary>
+    /// Increases the Energy value.
+    /// </summary>
+    /// <param name="_amount">the amount to increase</param>
+    public void IncreaseEnergy(int _amount)
+    {
+        CurrentEnergy += _amount;
+        if (CurrentEnergy >= MaxEnergy)
+        {
+            CurrentEnergy = MaxEnergy;
         }
     }
     /// <summary>
@@ -140,9 +194,9 @@ public class PlayerHealth : MonoBehaviour
     /// <returns></returns>
     public IEnumerator IncreaseHealthOverTime(int _amountToIncrease)
     {
-        while(CurrentHealth <= CurrentHealth + _amountToIncrease)
+        while (CurrentHealth <= CurrentHealth + _amountToIncrease)
         {
-            if(CurrentHealth >= m_maxHealth)
+            if (CurrentHealth >= MaxHealth)
             {
                 yield break;
             }
@@ -159,7 +213,7 @@ public class PlayerHealth : MonoBehaviour
     public bool DecreaseHunger(int _amount)
     {
         CurrentHunger -= _amount;
-        if(CurrentHunger <= 0)
+        if (CurrentHunger <= 0)
         {
             CurrentHunger = 0;
             OnPlayerDied?.Invoke();
@@ -175,7 +229,7 @@ public class PlayerHealth : MonoBehaviour
     public bool DecreaseThirst(int _amount)
     {
         CurrentThirst -= _amount;
-        if(CurrentThirst <= 0)
+        if (CurrentThirst <= 0)
         {
             CurrentThirst = 0;
             OnPlayerDied?.Invoke();
@@ -191,10 +245,26 @@ public class PlayerHealth : MonoBehaviour
     public bool DecreaseHealth(int _amount)
     {
         CurrentHealth -= _amount;
-        if(CurrentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
             OnPlayerDied?.Invoke();
+            return true;
+        }
+        return false;
+    }
+    /// <summary>
+    /// Decreases the Energy Value and checks for Forced Sleep;
+    /// </summary>
+    /// <param name="_amount">the amount to Decrease the energy</param>
+    /// <returns>true if the Player died</returns>
+    public bool DecreaseEnergy(int _amount)
+    {
+        CurrentEnergy -= _amount;
+        if (CurrentEnergy <= 0)
+        {
+            CurrentEnergy = 0;
+            OnPlayerStartSleep?.Invoke();
             return true;
         }
         return false;
@@ -229,7 +299,21 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSecondsRealtime(m_thirstWaitForSecondsForReducing);
         }
     }
-
+    /// <summary>
+    /// Reduces the Energy value over time.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ReduceEnergyOverTime()
+    {
+        while (true)
+        {
+            if (DecreaseEnergy(m_reduceEnergyValue))
+            {
+                yield break;
+            }
+            yield return new WaitForSecondsRealtime(m_energyWaitForSecondsForReducing);
+        }
+    }
 
     //private IEnumerator ReduceHealthOverTime()
     //{
@@ -249,5 +333,21 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Deeeeead");
+    }
+    private void Sleep()
+    {
+        BlackScreenManager.Instance.OnBlackScreenFinishedEvent.AddListener(WakeUp);
+        BlackScreenManager.Instance.OnBlackEvent.AddListener(Asleep);
+        BlackScreenManager.Instance.StartFadeToBlack();
+    }
+    private void WakeUp()
+    {
+        OnPlayerAwake?.Invoke();
+        BlackScreenManager.Instance.OnBlackScreenFinishedEvent.RemoveListener(WakeUp);
+    }
+    private void Asleep()
+    {
+        OnPlayerAsleep?.Invoke();
+        BlackScreenManager.Instance.OnBlackEvent.RemoveListener(Asleep);
     }
 }
