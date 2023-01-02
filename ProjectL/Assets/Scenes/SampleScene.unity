@@ -631,7 +631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1305912142}
   - component: {fileID: 1305912143}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -732,7 +732,7 @@ GameObject:
   - component: {fileID: 1574883449}
   - component: {fileID: 1574883448}
   - component: {fileID: 1574883446}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
