@@ -729,6 +729,8 @@ GameObject:
   - component: {fileID: 1574883444}
   - component: {fileID: 1574883443}
   - component: {fileID: 1574883447}
+  - component: {fileID: 1574883449}
+  - component: {fileID: 1574883448}
   - component: {fileID: 1574883446}
   m_Layer: 0
   m_Name: Enemy
@@ -782,6 +784,8 @@ MonoBehaviour:
   m_senses:
   - {fileID: 1574883443}
   - {fileID: 1574883447}
+  - {fileID: 1574883449}
+  - {fileID: 1574883448}
 --- !u!114 &1574883445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,6 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d6496e1c44cc245a60f09df17b29f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isAlerted: 0
   m_isBlind: 0
 --- !u!58 &1574883446
 CircleCollider2D:
@@ -826,7 +831,36 @@ MonoBehaviour:
   m_hearingArea: {fileID: 1574883446}
   m_hearingMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
+--- !u!114 &1574883448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574883441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fec0fd3ff6453740a5804dc4da8d649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_leader: {fileID: 0}
+--- !u!114 &1574883449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574883441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ba00075f4539249b34a08a7caffa53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_body: {fileID: 1574883446}
+  m_feelingMask:
+    serializedVersion: 2
+    m_Bits: 264
 --- !u!1001 &1585087940
 PrefabInstance:
   m_ObjectHideFlags: 0
