@@ -769,6 +769,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_player: {fileID: 56325547}
   m_stats: {fileID: 1574883445}
+  m_radius: 5
+  m_angle: 45
+  m_targetLayer:
+    serializedVersion: 2
+    m_Bits: 264
+  m_obstructionLayer:
+    serializedVersion: 2
+    m_Bits: 247
 --- !u!114 &1574883444
 MonoBehaviour:
   m_ObjectHideFlags: 0
