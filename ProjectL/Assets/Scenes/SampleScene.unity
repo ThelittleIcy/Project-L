@@ -729,16 +729,18 @@ GameObject:
   - component: {fileID: 1574883444}
   - component: {fileID: 1574883443}
   - component: {fileID: 1574883447}
+  - component: {fileID: 1574883450}
   - component: {fileID: 1574883449}
   - component: {fileID: 1574883448}
-  - component: {fileID: 1574883446}
+  - component: {fileID: 1574883452}
+  - component: {fileID: 1574883451}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1574883442
 Transform:
   m_ObjectHideFlags: 0
@@ -767,7 +769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea967c9f14c2258489e105b450436887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_target: {fileID: 0}
   m_stats: {fileID: 1574883445}
   m_radius: 5
   m_angle: 45
@@ -792,9 +793,11 @@ MonoBehaviour:
   m_senses:
   - {fileID: 1574883443}
   - {fileID: 1574883447}
+  - {fileID: 1574883450}
   - {fileID: 1574883449}
   - {fileID: 1574883448}
   m_possibleTargets: []
+  m_myStats: {fileID: 1574883445}
 --- !u!114 &1574883445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,22 +813,6 @@ MonoBehaviour:
   m_isAlerted: 0
   m_isDirty: 0
   m_isBlind: 0
---- !u!58 &1574883446
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574883441}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2
 --- !u!114 &1574883447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -838,7 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76a0523de1fd4364aae2859b003c653a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_hearingArea: {fileID: 1574883446}
+  m_radius: 3.5
   m_hearingMask:
     serializedVersion: 2
     m_Bits: 264
@@ -854,7 +841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fec0fd3ff6453740a5804dc4da8d649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_leader: {fileID: 0}
+  m_leader: {fileID: 1574883452}
 --- !u!114 &1574883449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -867,10 +854,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ba00075f4539249b34a08a7caffa53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_body: {fileID: 1574883446}
+  m_body: {fileID: 1574883451}
   m_feelingMask:
     serializedVersion: 2
     m_Bits: 264
+--- !u!114 &1574883450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574883441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8965948e0b566a449b9b028835dbd6be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_radius: 1.5
+  m_targetLayer:
+    serializedVersion: 2
+    m_Bits: 264
+--- !u!61 &1574883451
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574883441}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2}
+  m_EdgeRadius: 0
+--- !u!114 &1574883452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574883441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e46321e264b00fb48b910c1e79b094d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_groupMembers:
+  - {fileID: 1574883445}
 --- !u!1001 &1585087940
 PrefabInstance:
   m_ObjectHideFlags: 0

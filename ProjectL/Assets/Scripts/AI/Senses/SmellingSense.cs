@@ -5,13 +5,10 @@ using UnityEngine;
 public class SmellingSense : ASense
 {
     [SerializeField]
-    private CircleCollider2D m_area;
+    private float m_radius = 1f;
 
     [SerializeField]
     private LayerMask m_targetLayer;
-
-    [SerializeField]
-    private GameObject m_target;
     public override void SetUp()
     {
         Results = new Dictionary<string, bool>();
@@ -24,19 +21,12 @@ public class SmellingSense : ASense
 
     public override Dictionary<string, bool> ReturnIntel()
     {
+        GatherIntel();
         return Results;
-    }
-    public GameObject ReturnTarget()
-    {
-        if(m_target == null)
-        {
-            return null;
-        }
-        return m_target;
     }
     private bool IsSmelling()
     {
-        Collider2D[] rangeCheck = Physics2D.OverlapCircleAll(transform.position, m_area.radius, m_targetLayer);
+        Collider2D[] rangeCheck = Physics2D.OverlapCircleAll(transform.position, m_radius, m_targetLayer);
         if(rangeCheck.Length > 0)
         {
             for (int i = 0; i < rangeCheck.Length; i++)
@@ -45,13 +35,19 @@ public class SmellingSense : ASense
                 {
                     if (stats.IsDirty)
                     {
-                        m_target = rangeCheck[i].gameObject;
+                        Target = rangeCheck[i].gameObject;
                         return true;
                     }
                 }
             }
         }
-        m_target = null;
+        Target = null;
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        UnityEditor.Handles.color = Color.yellow;
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, m_radius);
     }
 }

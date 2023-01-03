@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(Collider2D))]
 public class HearingSense : ASense
 {
-    public Collider2D HearingArea { get => m_hearingArea; set => m_hearingArea = value; }
     [SerializeField]
-    private Collider2D m_hearingArea;
-
+    private float m_radius = 5f;
     [SerializeField]
     private LayerMask m_hearingMask;
     public override void SetUp()
     {
-        m_hearingArea.isTrigger = true;
         Results = new Dictionary<string, bool>();
         Results.Add("IsHearing", false);
     }
@@ -23,14 +19,38 @@ public class HearingSense : ASense
 
     public override Dictionary<string, bool> ReturnIntel()
     {
+        GatherIntel();
         return Results;
     }
     private bool IsHearing()
     {
-        if (m_hearingArea.IsTouchingLayers(m_hearingMask))
+        //if (m_hearingArea.IsTouchingLayers(m_hearingMask))
+        //{
+        //    return true;
+        //}
+
+        // AudioSource?
+        Collider2D[] rangeCheck = Physics2D.OverlapCircleAll(transform.position, m_radius, m_hearingMask);
+        if (rangeCheck.Length > 0)
         {
-            return true;
+            for (int i = 0; i < rangeCheck.Length; i++)
+            {
+                if (rangeCheck[i].gameObject.TryGetComponent<AudioSource>(out AudioSource source))
+                {
+                    if (source.isPlaying)
+                    {
+                        Target = rangeCheck[i].gameObject;
+                        return true;
+                    }
+                }
+            }
         }
+        Target = null;
         return false;
+    }
+    private void OnDrawGizmos()
+    {
+        UnityEditor.Handles.color = Color.red;
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, m_radius);
     }
 }

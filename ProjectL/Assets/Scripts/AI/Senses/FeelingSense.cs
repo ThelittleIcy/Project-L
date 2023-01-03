@@ -19,8 +19,13 @@ public class FeelingSense : ASense
         Results["IsFeeling"] = HasTouched();
     }
 
+    //private void Update()
+    //{
+    //    Debug.Log(HasTouched());
+    //}
     public override Dictionary<string, bool> ReturnIntel()
     {
+        GatherIntel();
         return Results;
     }
 

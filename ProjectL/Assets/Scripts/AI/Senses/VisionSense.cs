@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class VisionSense : ASense
 {
-    public GameObject Target { get => m_target; set => m_target = value; }
-    [SerializeField]
-    private GameObject m_target;
     [SerializeField]
     private EnemyStats m_stats;
 
@@ -39,20 +36,13 @@ public class VisionSense : ASense
     }
     public override Dictionary<string, bool> ReturnIntel()
     {
+        GatherIntel();
         return Results;
     }
-    private void Update()
-    {
-        Debug.Log(IsInVision());
-    }
-    public GameObject ReturnTarget()
-    {
-        if (m_target == null)
-        {
-            return null;
-        }
-        return m_target;
-    }
+    //private void Update()
+    //{
+    //    Debug.Log(IsInVision());
+    //}
     private bool IsInVision()
     {
         Collider2D[] rangeCheck = Physics2D.OverlapCircleAll(transform.position, m_radius, m_targetLayer);
@@ -70,13 +60,13 @@ public class VisionSense : ASense
 
                     if (!Physics2D.Raycast(transform.position, directionToTarget, distanceToTarget, m_obstructionLayer))
                     {
-                        m_target = target.gameObject;
+                        Target = target.gameObject;
                         return true;
                     }
                 }
             }
         }
-        m_target = null;
+        Target = null;
         return false;
     }
     private bool IsBlind()
@@ -91,6 +81,7 @@ public class VisionSense : ASense
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
+        UnityEditor.Handles.color = Color.blue;
         UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, m_radius);
 
         Vector3 angle1 = DirectionFromAngles(-transform.eulerAngles.z, -m_angle * 0.5f);

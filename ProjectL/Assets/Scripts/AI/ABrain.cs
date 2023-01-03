@@ -18,6 +18,7 @@ public abstract class ABrain : MonoBehaviour
 
     public abstract void SetUpAllSenses();
     public abstract void GetSenseResults();
+    public abstract void GetPossibleTargets();
     public abstract void MakeDecision();
     public void OnValidate()
     {

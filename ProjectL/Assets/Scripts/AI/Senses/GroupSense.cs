@@ -24,6 +24,7 @@ public class GroupSense : ASense
     }
     public override Dictionary<string, bool> ReturnIntel()
     {
+        GatherIntel();
         return Results;
     }
 
