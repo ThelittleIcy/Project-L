@@ -32,7 +32,7 @@ public class GroupSense : ASense
     {
         for (int i = 0; i < m_leader.GroupMembers.Count; i++)
         {
-            if (m_leader.GroupMembers[i].IsAlerted)
+            if (m_leader.GroupMembers[i].IsAlerted || m_leader.GroupMembers[i].IsAttacking)
             {
                 return true;
             }

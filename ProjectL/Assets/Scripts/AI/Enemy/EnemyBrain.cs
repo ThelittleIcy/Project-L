@@ -55,6 +55,38 @@ public class EnemyBrain : ABrain
 
     public override void MakeDecision()
     {
-        throw new System.NotImplementedException();
+        if (Informations["InVision"] && !Informations["Blind"])
+        {
+            m_myStats.IsAttacking = true;
+            m_myStats.IsAlerted = true;
+            // Move To DetermineClosestEnemy()
+            return;
+        }
+        if (Informations["Blind"])
+        {
+            m_myStats.IsAlerted = true;
+        }
+    }
+
+    private GameObject DetermineClosestEnemy()
+    {
+        if(PossibleTargets.Count == 0)
+        {
+            return null;
+        }
+
+        float minDistance;
+        minDistance = Vector3.Distance(transform.position, PossibleTargets[0].transform.position);
+        GameObject target = PossibleTargets[0];
+        for (int i = 1; i < PossibleTargets.Count; i++)
+        {
+            float dis = Vector3.Distance(transform.position, PossibleTargets[i].transform.position);
+            if(dis < minDistance)
+            {
+                minDistance = dis;
+                target = PossibleTargets[i];
+            }
+        }
+        return target;
     }
 }
