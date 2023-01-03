@@ -12,6 +12,10 @@ public abstract class ABrain : MonoBehaviour
     [SerializeField]
     private List<ASense> m_senses;
 
+    public List<GameObject> PossibleTargets { get => m_possibleTargets; set => m_possibleTargets = value; }
+    [SerializeField]
+    private List<GameObject> m_possibleTargets;
+
     public abstract void SetUpAllSenses();
     public abstract void GetSenseResults();
     public abstract void MakeDecision();

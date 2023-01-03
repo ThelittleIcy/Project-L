@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class VisionSense : ASense
 {
-    public Transform Player { get => m_player; set => m_player = value; }
+    public GameObject Target { get => m_target; set => m_target = value; }
     [SerializeField]
-    private Transform m_player;
+    private GameObject m_target;
     [SerializeField]
     private EnemyStats m_stats;
 
     [SerializeField]
     private float m_radius = 5f;
     [SerializeField]
-    [Range(1,360)]
+    [Range(1, 360)]
     private float m_angle = 45f;
 
     [SerializeField]
@@ -41,31 +41,47 @@ public class VisionSense : ASense
     {
         return Results;
     }
-
+    private void Update()
+    {
+        Debug.Log(IsInVision());
+    }
+    public GameObject ReturnTarget()
+    {
+        if (m_target == null)
+        {
+            return null;
+        }
+        return m_target;
+    }
     private bool IsInVision()
     {
         Collider2D[] rangeCheck = Physics2D.OverlapCircleAll(transform.position, m_radius, m_targetLayer);
 
-        if(rangeCheck.Length > 0)
+        if (rangeCheck.Length > 0)
         {
-            Transform target = rangeCheck[0].transform;
-            Vector2 directionToTarget = (target.position - transform.position).normalized;
-
-            if(Vector2.Angle(transform.up, directionToTarget) < m_angle * 0.5f)
+            for (int i = 0; i < rangeCheck.Length; i++)
             {
-                float distanceToTarget = Vector2.Distance(transform.position, target.position);
+                Transform target = rangeCheck[i].transform;
+                Vector2 directionToTarget = (target.position - transform.position).normalized;
 
-                if(!Physics2D.Raycast(transform.position, directionToTarget, distanceToTarget, m_obstructionLayer))
+                if (Vector2.Angle(transform.up, directionToTarget) < m_angle * 0.5f)
                 {
-                    return true;
+                    float distanceToTarget = Vector2.Distance(transform.position, target.position);
+
+                    if (!Physics2D.Raycast(transform.position, directionToTarget, distanceToTarget, m_obstructionLayer))
+                    {
+                        m_target = target.gameObject;
+                        return true;
+                    }
                 }
             }
         }
+        m_target = null;
         return false;
     }
     private bool IsBlind()
     {
-        if(m_stats.IsBlind == true)
+        if (m_stats.IsBlind == true)
         {
             return true;
         }

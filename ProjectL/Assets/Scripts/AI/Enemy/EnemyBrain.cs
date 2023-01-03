@@ -6,7 +6,7 @@ public class EnemyBrain : ABrain
 {
     public override void GetSenseResults()
     {
-        throw new System.NotImplementedException();
+        // Vision -> Get Target
     }
 
     public override void MakeDecision()
