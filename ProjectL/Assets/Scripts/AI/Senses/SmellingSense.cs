@@ -14,6 +14,7 @@ public class SmellingSense : ASense
         Results = new Dictionary<string, bool>();
         Results.Add("IsSmelling", false);
     }
+    [ContextMenu("Test")]
     public override void GatherIntel()
     {
         Results["IsSmelling"] = IsSmelling();

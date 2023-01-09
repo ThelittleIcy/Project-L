@@ -11,7 +11,7 @@ public class GroupSense : ASense
         Results = new Dictionary<string, bool>();
         Results.Add("IsAlerted", false);
 
-        if(m_leader == null)
+        if (m_leader == null)
         {
             Debug.LogError("You did not Assign a Leader on " + this.gameObject);
             return;
@@ -30,12 +30,17 @@ public class GroupSense : ASense
 
     private bool IsAlerted()
     {
+        // Dich selbst rausnehmen
         for (int i = 0; i < m_leader.GroupMembers.Count; i++)
         {
-            if (m_leader.GroupMembers[i].IsAlerted || m_leader.GroupMembers[i].IsAttacking)
+            if (m_leader.GroupMembers[i].gameObject != gameObject)
             {
-                return true;
+                if (m_leader.GroupMembers[i].IsAlerted || m_leader.GroupMembers[i].IsAttacking)
+                {
+                    return true;
+                }
             }
+
         }
         return false;
     }
